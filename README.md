@@ -71,7 +71,7 @@ Before you begin, ensure you have the following:
 
 1. **Navigate to Project Directory**:
    ```bash
-   cd /path/to/SecureSpreadsheetS3Upload
+   cd /path/to/dcp-secure-spreadsheet-upload
 
 2. **Build the Docker Image**:
    ```bash

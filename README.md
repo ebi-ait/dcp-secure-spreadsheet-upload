@@ -10,6 +10,7 @@ This guide provides step-by-step instructions to deploy the AWS Lambda function 
 4. [Building the Docker Image](#building-the-docker-image)
 5. [Tagging and Pushing to ECR](#tagging-and-pushing-to-ecr)
 6. [Creating/Updating the Lambda Function](#creatingupdating-the-lambda-function)
+7. [Running Tests](#running-tests)
 
 ## General Description
 
@@ -110,6 +111,21 @@ If updating an existing function:
    --function-name dcp-secure-spreadsheet-upload-auth \
    --image-uri 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
    --profile your-aws-profile
+   ```
 
 
+## Running Tests
 
+### Setting Up the Test Environment
+
+1. **Install the required packages:**
+   ```bash
+   pip install -r requirements.txt
+
+2. **Run the tests using pytest:**
+   ```bash
+   pytest tests/
+
+### Environment Variables for Lambda
+- **TOPIC_NAME**: The name of the SNS topic.
+- **MY_AWS_REGION**: The AWS region where your SNS topic is located.

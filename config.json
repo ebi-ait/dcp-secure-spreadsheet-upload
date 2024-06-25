@@ -1,6 +1,5 @@
 {
   "environment": "staging",
-  "topic_arn": "arn:aws:sns:us-east-1:871979166454:dcp-secure-spreadsheet-upload-notification",
   "dev": {
     "secret_name": "ingest/dev/gcp-credentials.json"
   },

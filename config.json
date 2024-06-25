@@ -1,0 +1,12 @@
+{
+  "environment": "staging",
+  "dev": {
+    "secret_name": "ingest/dev/gcp-credentials.json"
+  },
+  "staging": {
+    "secret_name": "ingest/staging/gcp-credentials.json"
+  },
+  "prod": {
+    "secret_name": "ingest/prod/gcp-credentials.json"
+  }
+}

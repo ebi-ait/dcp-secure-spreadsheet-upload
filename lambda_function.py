@@ -237,7 +237,7 @@ def send_notification(sns, notification_message, project_uuid, context):
     account_id = context.invoked_function_arn.split(":")[4]
     if account_id != "Fake":
         print("Sending notification to " + topic_name)
-        topic_arn = f"arn:aws:sns:{os.environ['AWS_REGION']}:{account_id}:{topic_name}"
+        topic_arn = f"arn:aws:sns:{os.environ['MY_AWS_REGION']}:{account_id}:{topic_name}"
         sns.publish(
             TopicArn=topic_arn,
             Message=json.dumps(notification_message, indent=4),

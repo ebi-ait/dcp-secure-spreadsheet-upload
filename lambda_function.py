@@ -203,9 +203,8 @@ def load_config():
         config = json.load(config_file)
     environment = config.get('environment', 'staging')
     secret_name = config[environment]['secret_name']
-    topic_arn = config['topic_arn']
     print(f'Running in environment: {environment}')
-    return environment, secret_name, topic_arn
+    return environment, secret_name
 
 
 def get_audience(environment):

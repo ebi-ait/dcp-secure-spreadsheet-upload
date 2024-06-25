@@ -112,13 +112,6 @@ Before you begin, ensure you have the following:
       --function-name dcp-secure-spreadsheet-upload-auth \
       --image-uri 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
       --profile your-aws-profile
-
-If updating an existing function:
-   ```bash
-   aws lambda update-function-code \
-   --function-name dcp-secure-spreadsheet-upload-auth \
-   --image-uri 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
-   --profile your-aws-profile
    ```
 
 ## Running Tests

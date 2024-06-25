@@ -136,4 +136,3 @@ If updating an existing function:
 ### Environment Variables for Lambda
 - **TOPIC_NAME**: The name of the SNS topic.
 - **MY_AWS_REGION**: The AWS region where your SNS topic is located.
-- **MY_AWS_REGION**: The AWS region where your SNS topic is located.

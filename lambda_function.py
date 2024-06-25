@@ -232,13 +232,19 @@ def prepare_notification(bucket_name, folder_uuid, project_uuid, object_key, fil
     return notification_message
 
 
-def send_notification(sns, topic_arn, notification_message, project_uuid):
-    sns.publish(
-        TopicArn=topic_arn,
-        Message=json.dumps(notification_message, indent=4),
-        Subject=f"Spreadsheet Upload Notification: {project_uuid}",
-    )
-    print('Notification sent successfully')
+def send_notification(sns, notification_message, project_uuid, context):
+    topic_name = os.environ['TOPIC_NAME']
+    account_id = context.invoked_function_arn.split(":")[4]
+    if account_id != "Fake":
+        print("Sending notification to " + topic_name)
+        topic_arn = f"arn:aws:sns:{os.environ['AWS_REGION']}:{account_id}:{topic_name}"
+        sns.publish(
+            TopicArn=topic_arn,
+            Message=json.dumps(notification_message, indent=4),
+            Subject=f"Spreadsheet Upload Notification: {project_uuid}",
+        )
+    else:
+        print("Skipping notification as this is a fake account")
 
 
 def lambda_handler(event, context):
@@ -307,7 +313,7 @@ def lambda_handler(event, context):
 
     sns = boto3.client('sns')
     try:
-        send_notification(sns, topic_arn, notification_message, project_uuid)
+        send_notification(sns, notification_message, project_uuid, context)
     except ClientError as e:
         return {
             'statusCode': 500,

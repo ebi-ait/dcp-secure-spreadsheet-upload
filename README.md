@@ -23,6 +23,10 @@ For more details, see also the following documents:
 - [Managed access dataset - Data and metadata review and export SOP](https://docs.google.com/document/d/14cp5cOIdc11JQVSqOh21Ev4aRWSOBh3TLMxC1yE4tj4/edit#heading=h.dp9owg4pqrw9)
 - [Managed access dataset - Data Transfer SOP](https://docs.google.com/document/d/1Ho-s39yfc9gxFH_cyOreBbiOngpsiWBm3DtgY97tkpA/edit?pli=1#heading=h.5uilta56du84)
 
+### Authentication System
+
+The token authentication system uses the `hca_ingest` client to generate tokens. Google service account credentials are retrieved from the environment variable and loaded into the client. For more details, see the [hca_ingest repository](https://github.com/ebi-ait/ingest-client).
+
 ## Flowchart
 
 ```mermaid
@@ -38,9 +42,8 @@ flowchart TD
    I --> J[Generate Audience URL]
    J --> |If environment is prod| K[Use Production URL]
    J --> |Else| L[Use Development/Staging URL]
-   K --> M[Retrieve Credentials]
-   L --> M[Retrieve AWS Credentials]
-   M --> N[Generate Token]
+   L --> M[Retrieve Credentials]
+   M --> N[Generate Token using hca_ingest]
    N --> |If token generation fails| O[Raise Error]
    N --> P[Upload Spreadsheet]
    P --> |If upload fails| Q[Raise Error]
@@ -58,8 +61,7 @@ Before you begin, ensure you have the following:
 
 - **AWS CLI**: Installed and configured with appropriate permissions.
 - **Docker**: Installed on your local machine.
-- **IAM Role**: The function retrieves credentials from AWS Secrets Manager to make authorized requests to the ingest service, ensuring that the upload process is secure and properly authenticated.
-  Ensure you have a role with necessary permissions for Lambda execution, S3 and Secrets Manager access.
+- **IAM Role**: Ensure you have a role with necessary permissions for Lambda execution, S3 access, and SNS.
 - **Amazon ECR**: Repository set up to store the Docker image.
 - **AWS Account**: With access to Lambda, IAM, and ECR services.
 
@@ -129,3 +131,4 @@ Before you begin, ensure you have the following:
 ### Environment Variables for Lambda
 - **TOPIC_NAME**: The name of the SNS topic.
 - **MY_AWS_REGION**: The AWS region where your SNS topic is located.
+- **GOOGLE_APPLICATION_CREDENTIALS**: The JSON credentials file which is required for authenticating and generating tokens using the hca_ingest client.

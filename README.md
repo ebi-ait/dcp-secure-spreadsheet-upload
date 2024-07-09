@@ -114,8 +114,6 @@ Before you begin, ensure you have the following:
    docker push 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest
 
 ####  Creating/Updating the Lambda Function
-
-   **Create or Update Lambda Function:**
    If creating a new function:
    ```bash
    aws lambda create-function \
@@ -127,11 +125,11 @@ Before you begin, ensure you have the following:
    ```
 
    If updating an existing function:
-      ```bash
-      aws lambda update-function-code \
-      --function-name dcp-secure-spreadsheet-upload-auth \
-      --image-uri 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
-      --profile your-aws-profile
+   ```bash
+   aws lambda update-function-code \
+   --function-name dcp-secure-spreadsheet-upload-auth \
+   --image-uri 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
+   --profile your-aws-profile
    ```
 
 ## Running Tests

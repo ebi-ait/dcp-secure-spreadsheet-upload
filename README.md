@@ -76,6 +76,12 @@ Before you begin, ensure you have the following:
 
 ## Deployment
 
+   **Navigate to Project Directory**:
+
+   ```bash
+  cd /path/to/dcp-secure-spreadsheet-upload
+  ```
+
 ### For notify-spreadsheet-upload-function
 
 **Use the provided deploy_notify_upload.sh script to deploy the function.**

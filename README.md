@@ -76,6 +76,12 @@ Before you begin, ensure you have the following:
 
 ## Deployment
 
+   **Navigate to Project Directory**:
+
+   ```bash
+  cd /path/to/dcp-secure-spreadsheet-upload
+  ```
+
 ### For notify-spreadsheet-upload-function
 
 **Use the provided deploy_notify_upload.sh script to deploy the function.**
@@ -90,7 +96,7 @@ Before you begin, ensure you have the following:
    
 ### For dcp-secure-spreadsheet-upload-auth
 
-1. **Build the Docker Image**:
+1. **Build the Docker Image:**
    ```bash
    docker build -t secure-spreadsheet-upload -f ingest_upload/Dockerfile .
 
@@ -106,10 +112,9 @@ Before you begin, ensure you have the following:
 4. **Push the Docker Image to ECR:**
    ```bash
    docker push 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest
-
-####  Creating/Updating the Lambda Function
-
-1. **Create or Update Lambda Function:**
+   ```
+   
+5. **Creating/Updating the Lambda Function:**
    If creating a new function:
    ```bash
    aws lambda create-function \
@@ -121,11 +126,11 @@ Before you begin, ensure you have the following:
    ```
 
    If updating an existing function:
-      ```bash
-      aws lambda update-function-code \
-      --function-name dcp-secure-spreadsheet-upload-auth \
-      --image-uri 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
-      --profile your-aws-profile
+   ```bash
+   aws lambda update-function-code \
+   --function-name dcp-secure-spreadsheet-upload-auth \
+   --image-uri 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
+   --profile your-aws-profile
    ```
 
 ## Running Tests

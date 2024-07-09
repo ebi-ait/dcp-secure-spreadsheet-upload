@@ -4,11 +4,11 @@ from unittest.mock import patch, MagicMock
 
 from werkzeug.datastructures import FileStorage
 
-from lambda_function import get_project_uuid_from_tags, get_s3_event_details, prepare_notification, \
-    upload_to_ingest
+from common.utils import get_project_uuid_from_tags
+from ingest_upload.upload_to_ingest_lambda import upload_to_ingest
 
 
-class TestLambdaFunction(unittest.TestCase):
+class TestIngestUploadLambdaFunction(unittest.TestCase):
 
     def setUp(self):
         self.mock_s3 = MagicMock()
@@ -39,50 +39,8 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertEqual(str(context.exception), 'Project UUID not found in tags.')
 
-    def test_get_s3_event_details(self):
-        # given
-        event = {
-            'Records': [{
-                's3': {
-                    'bucket': {'name': 'test-bucket'},
-                    'object': {'key': 'test-key'}
-                }
-            }]
-        }
-
-        # when
-        bucket_name, object_key = get_s3_event_details(event)
-
-        # then
-        self.assertEqual(bucket_name, 'test-bucket')
-        self.assertEqual(object_key, 'test-key')
-
-    def test_prepare_notification(self):
-        # given/ when
-        notification_message = prepare_notification(
-            'test-bucket', 'test-folder', 'test-project-uuid',
-            'test-key', 1024, datetime.strptime('2023-06-21T12:34:56.000Z', "%Y-%m-%dT%H:%M:%S.%fZ"),
-            {'result': 'success'}, 'staging'
-        )
-
-        # then
-        expected_message = {
-            'bucket': 'test-bucket',
-            'folder': 'test-folder',
-            'project_uuid': 'test-project-uuid',
-            'file_name': 'test-key',
-            'file_size': 1024,
-            'last_modified': '2023-06-21 12:34:56',
-            'upload_result': {'result': 'success'},
-            'environment': 'staging',
-            'message': "A new spreadsheet named 'test-key' has been uploaded to the folder 'test-folder' in the "
-                       "bucket 'test-bucket' in environment 'staging'."
-        }
-
-        self.assertEqual(notification_message, expected_message)
-
-    @patch('lambda_function.requests.post')
-    @patch('lambda_function.boto3.resource')
+    @patch('ingest_upload.upload_to_ingest_lambda.requests.post')
+    @patch('ingest_upload.upload_to_ingest_lambda.boto3.resource')
     def test_upload_to_ingest(self, mock_boto_resource, mock_post):
         # given
         mock_s3 = MagicMock()
@@ -103,7 +61,11 @@ class TestLambdaFunction(unittest.TestCase):
             'ContentLength': 1234
         }
 
-        mock_post.return_value = MagicMock(status_code=200, json=lambda: {'status': 'success'})
+        # Configure the mock response
+        mock_response = MagicMock()
+        mock_response.status_code = 201
+        mock_response.content = b'{"details": {"submission_id": "test-submission-id"}}'
+        mock_post.return_value = mock_response
 
         # when
         result = upload_to_ingest(
@@ -111,20 +73,19 @@ class TestLambdaFunction(unittest.TestCase):
             spreadsheet_name='test-spreadsheet.xlsx',
             token='fake-token',
             environment='staging',
-            project_uuid='test-project-uuid',
-            update_project=False
+            project_uuid='test-project-uuid'
         )
 
         # then
-        self.assertEqual(result, {'status': 'success'})
+        self.assertEqual(result, {"submission_id": "test-submission-id"})
         mock_post.assert_called_once()
         called_args, called_kwargs = mock_post.call_args
-        self.assertEqual(called_kwargs['url'], 'https://ingest.staging.archive.data.humancellatlas.org/api_upload')
-        self.assertEqual(called_kwargs['data'], {'params': '{"projectUuid": "test-project-uuid", "isUpdate": false, '
-                                                           '"updateProject": false}'})
+        self.assertEqual(called_args[0], 'https://ingest.staging.archive.data.humancellatlas.org/api_upload')
+        self.assertEqual(called_kwargs['data'], {'params': '{"projectUuid": "test-project-uuid"}'})
         self.assertEqual(called_kwargs['headers'], {'Authorization': 'Bearer fake-token'})
         self.assertIn('file', called_kwargs['files'])
         self.assertIsInstance(called_kwargs['files']['file'], FileStorage)
         self.assertEqual(called_kwargs['files']['file'].filename, 'test-spreadsheet.xlsx')
         self.assertEqual(called_kwargs['files']['file'].content_type, 'application/octet-stream')
+
 

@@ -65,7 +65,10 @@ Before you begin, ensure you have the following:
 
 - **AWS CLI**: Installed and configured with appropriate permissions.
 - **Docker**: Installed on your local machine.
-- **IAM Role**: Ensure you have a role with necessary permissions for Lambda execution, S3 access, and SNS.
+- **IAM Role**: Ensure you have a role with necessary permissions for Lambda execution, S3 access, and SNS. The following AWS managed policies should be attached to the role:
+  - AmazonS3ReadOnlyAccess
+  - AmazonSNSFullAccess
+  - AWSLambdaBasicExecutionRole
 - **Amazon ECR**: Repository set up to store the Docker image.
 - **AWS Account**: With access to Lambda, IAM, and ECR services.
 

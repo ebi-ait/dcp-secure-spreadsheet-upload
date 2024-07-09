@@ -39,20 +39,23 @@ flowchart TD
    E --> F[Retrieve Project UUID]
    F --> |If project UUID not found| G[Raise Error-not currently supported]
    F --> H[Get Object Metadata]
-   H --> I[Load Configuration]
-   I --> J[Generate Audience URL]
-   J --> |If environment is prod| K[Use Production URL]
-   J --> |Else| L[Use Development/Staging URL]
-   L --> M[Retrieve Credentials]
-   M --> N[Generate Token using hca_ingest]
-   N --> |If token generation fails| O[Raise Error]
-   N --> P[Upload Spreadsheet]
-   P --> |If upload fails| Q[Raise Error]
-   P --> R[Send Notification]
-   R --> S[End]
-   G --> S
-   O --> S
-   Q --> S
+   H --> I[Send Notification]
+   I --> J[Wranglers edit spreadsheet using AWS Workspaces]
+   J --> K[Manually trigger upload to ingest]
+   K --> L[Load Configuration]
+   L --> M[Generate Audience URL]
+   M --> |If environment is prod| N[Use Production URL]
+   M --> |Else| O[Use Development/Staging URL]
+   O --> P[Retrieve Credentials]
+   P --> Q[Generate Token using hca_ingest]
+   Q --> |If token generation fails| R[Raise Error]
+   Q --> S[Upload Spreadsheet]
+   S --> |If upload fails| T[Raise Error]
+   S --> U[Send Notification]
+   U --> V[End]
+   G --> V
+   R --> V
+   T --> V
 
 ```
 

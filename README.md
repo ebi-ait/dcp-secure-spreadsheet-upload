@@ -94,18 +94,16 @@ Before you begin, ensure you have the following:
    ```bash
    docker build -t secure-spreadsheet-upload -f ingest_upload/Dockerfile .
 
-####  Tagging and Pushing to ECR
-
-1. **Tag the Docker Image:**
+2. **Tag the Docker Image:**
    Replace <account-id> and <region> with your AWS account ID and region.
    ```bash
    docker tag secure-spreadsheet-upload:latest 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest
 
-2. **Authenticate Docker to ECR:**
+3. **Authenticate Docker to ECR:**
    ```bash
    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 871979166454.dkr.ecr.us-east-1.amazonaws.com
 
-3. **Push the Docker Image to ECR:**
+4. **Push the Docker Image to ECR:**
    ```bash
    docker push 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest
 

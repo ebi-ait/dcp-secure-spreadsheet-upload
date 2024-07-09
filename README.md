@@ -46,6 +46,7 @@ flowchart TD
    L --> M[Generate Audience URL]
    M --> |If environment is prod| N[Use Production URL]
    M --> |Else| O[Use Development/Staging URL]
+   N --> P[Retrieve Credentials]
    O --> P[Retrieve Credentials]
    P --> Q[Generate Token using hca_ingest]
    Q --> |If token generation fails| R[Raise Error]

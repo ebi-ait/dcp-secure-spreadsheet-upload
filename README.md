@@ -96,7 +96,7 @@ Before you begin, ensure you have the following:
    
 ### For dcp-secure-spreadsheet-upload-auth
 
-1. **Build the Docker Image**:
+1. **Build the Docker Image:**
    ```bash
    docker build -t secure-spreadsheet-upload -f ingest_upload/Dockerfile .
 
@@ -112,25 +112,26 @@ Before you begin, ensure you have the following:
 4. **Push the Docker Image to ECR:**
    ```bash
    docker push 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest
-
-   ####  Creating/Updating the Lambda Function
-      If creating a new function:
-      ```bash
-      aws lambda create-function \
-      --function-name dcp-secure-spreadsheet-upload-auth \
-      --package-type Image \
-      --code ImageUri=871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
-      --role arn:aws:iam::871979166454:role/lambda-execution-role \
-      --profile your-aws-profile
-      ```
+   ```
    
-      If updating an existing function:
-      ```bash
-      aws lambda update-function-code \
-      --function-name dcp-secure-spreadsheet-upload-auth \
-      --image-uri 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
-      --profile your-aws-profile
-      ```
+5. **Creating/Updating the Lambda Function:**
+   If creating a new function:
+   ```bash
+   aws lambda create-function \
+   --function-name dcp-secure-spreadsheet-upload-auth \
+   --package-type Image \
+   --code ImageUri=871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
+   --role arn:aws:iam::871979166454:role/lambda-execution-role \
+   --profile your-aws-profile
+   ```
+
+   If updating an existing function:
+   ```bash
+   aws lambda update-function-code \
+   --function-name dcp-secure-spreadsheet-upload-auth \
+   --image-uri 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest \
+   --profile your-aws-profile
+   ```
 
 ## Running Tests
 

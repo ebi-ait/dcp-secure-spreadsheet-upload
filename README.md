@@ -14,7 +14,10 @@ This guide provides step-by-step instructions to deploy the AWS Lambda function 
 
 ## General Description
 
-The purpose of the Lambda function `dcp-secure-spreadsheet-upload-auth` is to securely upload spreadsheet files to ingest. Data contributors upload a spreadsheet in a designated upload area that has been tagged with the project UUID. The Lambda function detects these uploads, extracts the project UUID, and securely transfers the spreadsheet to ingest via an API call to the broker for the correct project.
+The purpose of the Lambda functions dcp-secure-spreadsheet-upload/notify_upload and dcp-secure-spreadsheet-upload/ingest_upload is to handle the secure upload of spreadsheet files and the subsequent notification and ingestion processes.
+
+dcp-secure-spreadsheet-upload/notify_upload: Detects uploads to the designated S3 bucket, extracts the project UUID from the folder tags, and sends a notification.
+dcp-secure-spreadsheet-upload/ingest_upload: Uploads the spreadsheet to the ingest system using an API call, triggered (currently) by wranglers.
 
 Users (wranglers) can create and tag upload areas using the `hca-util` tool. For more details on how to use `hca-util` to create upload areas, see the [hca-util repository](https://github.com/ebi-ait/hca-util).
 
@@ -68,9 +71,23 @@ Before you begin, ensure you have the following:
 ## Existing AWS Resources
 
 - **ECR Repository**: An ECR repository named `secure-spreadsheet-upload-repo` is already created. You can view it [here](https://us-east-1.console.aws.amazon.com/ecr/repositories/private/871979166454/secure-spreadsheet-upload-repo?region=us-east-1).
-- **Lambda Function**: The Lambda function named `dcp-secure-spreadsheet-upload-auth` is available. You can view it [here](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/dcp-secure-spreadsheet-upload-auth?tab=image).
+- **Lambda Function**: The Lambda function named `notify-spreadsheet-upload-function` is available [here](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/notify-spreadsheet-upload-function?tab=code) and `dcp-secure-spreadsheet-upload-auth` [here](https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/dcp-secure-spreadsheet-upload-auth?tab=image).
 
 ## Building the Docker Image
+
+### For notify-spreadsheet-upload-function
+
+**Use the provided deploy_notify_upload.sh script to deploy the function.**
+
+1. Ensure the script is executable:
+   ```bash
+   chmod +x deploy_notify_upload.sh
+
+2. Run the deployment script:
+   ```bash
+   ./deploy_notify_upload.sh
+   
+### For dcp-secure-spreadsheet-upload-auth
 
 1. **Navigate to Project Directory**:
    ```bash
@@ -78,9 +95,9 @@ Before you begin, ensure you have the following:
 
 2. **Build the Docker Image**:
    ```bash
-   docker build -t secure-spreadsheet-upload .
+   docker build -t secure-spreadsheet-upload -f ingest_upload/Dockerfile .
 
-##  Tagging and Pushing to ECR
+####  Tagging and Pushing to ECR
 
 1. **Tag the Docker Image:**
    Replace <account-id> and <region> with your AWS account ID and region.
@@ -95,7 +112,7 @@ Before you begin, ensure you have the following:
    ```bash
    docker push 871979166454.dkr.ecr.us-east-1.amazonaws.com/secure-spreadsheet-upload-repo:latest
 
-##  Creating/Updating the Lambda Function
+####  Creating/Updating the Lambda Function
 
 1. **Create or Update Lambda Function:**
    If creating a new function:

@@ -1,0 +1,4 @@
+{
+  "environment": "staging",
+  "secret_name": "GOOGLE_APPLICATION_CREDENTIALS"
+}

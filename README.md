@@ -115,7 +115,7 @@ Before you begin, ensure you have the following:
 
 ####  Creating/Updating the Lambda Function
 
-1. **Create or Update Lambda Function:**
+   **Create or Update Lambda Function:**
    If creating a new function:
    ```bash
    aws lambda create-function \

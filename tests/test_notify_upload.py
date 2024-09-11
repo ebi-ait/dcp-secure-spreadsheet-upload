@@ -69,6 +69,8 @@ class TestNotifyUploadLambdaFunction(unittest.TestCase):
             'file_name': 'test-key',
             'file_size': 1024,
             'last_modified': '2023-06-21 12:34:56',
+            'is_update': False,
+            'update_project': False,
             'message': "A new spreadsheet named 'test-key' has been uploaded to the folder 'test-folder' in the "
                        "bucket 'test-bucket'."
         }

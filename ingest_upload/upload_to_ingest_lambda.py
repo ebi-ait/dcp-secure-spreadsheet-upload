@@ -16,7 +16,7 @@ def base_url(environment):
 
 
 def upload_to_ingest(object_key, spreadsheet_name, token, environment, project_uuid, is_update=False,
-                     submission_uuid=None):
+                     update_project=False, submission_uuid=None):
     s3 = boto3.resource('s3')
     s3_obj = s3.Object(bucket_name='hca-util-upload-area', key=object_key)
 
@@ -27,6 +27,9 @@ def upload_to_ingest(object_key, spreadsheet_name, token, environment, project_u
     params = {}
     if is_update:
         params['isUpdate'] = is_update
+
+    if update_project:
+        params['updateProject'] = update_project
 
     if project_uuid:
         params['projectUuid'] = project_uuid
@@ -107,6 +110,8 @@ def lambda_handler(event, context):
     bucket_name = 'hca-util-upload-area'
     folder_uuid = event.get('folder_name', None)
     spreadsheet_name = event.get('file_name', None)
+    is_update = event.get('isUpdate', False)
+    update_project = event.get('updateProject', False)
     object_key = f'{folder_uuid}/{spreadsheet_name}' if folder_uuid and spreadsheet_name else None
     project_uuid = None
 
@@ -124,13 +129,15 @@ def lambda_handler(event, context):
         token = authenticate(secret_env_value, audience, environment, project_uuid)
 
         # Upload the spreadsheet
-        result = upload_to_ingest(object_key, spreadsheet_name, token, environment, project_uuid)
+        result = upload_to_ingest(object_key, spreadsheet_name, token, environment, project_uuid, is_update,
+                                  update_project)
         submission_id = result['submission_id']
 
         notification_message = utils.prepare_notification(bucket_name, folder_uuid, spreadsheet_name,
                                                           project_uuid, file_size, file_last_modified,
                                                           submission_id=submission_id, result=result,
-                                                          environment=environment)
+                                                          environment=environment, is_update=is_update,
+                                                          update_project=update_project)
         sns = boto3.client('sns')
         utils.send_notification(sns, notification_message, project_uuid, context, submission_id=submission_id)
 
